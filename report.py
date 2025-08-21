@@ -114,16 +114,6 @@ def print_traffic_analysis():
     global max_endpoint2
     global perc1, perc2, max1, max2
 
-    '''max_endpoint1 = max(endpoint_dict, key = lambda endpoint: endpoint_dict[endpoint]['count'])
-    max1 = endpoint_dict[max_endpoint1]['count']
-    perc1 = round((max1/total_requests*100),1)
-
-    endpoint_dict2 = copy.deepcopy(endpoint_dict)
-    del endpoint_dict2[max_endpoint1]
-
-    max_endpoint2 = max(endpoint_dict2, key = lambda endpoint: endpoint_dict2[endpoint]['count'])
-    max2 = endpoint_dict2[max_endpoint2]['count']
-    perc2 = round((max2/total_requests*100),1)'''
 
     print("Endpoint Popularity:")
     print(f"    - {max_endpoint1}: {max1} requests ({perc1})")
