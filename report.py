@@ -1,6 +1,7 @@
 import copy
 import argparse
-
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 endpoint_dict = {} 
 #{"/courses":{"count":0,'"total_response_time":response_time,"max_response_time":response_time}}
@@ -19,6 +20,8 @@ parser.add_argument("--endpoints", action="store_true", help="Generate endpoint 
 parser.add_argument("--metrics", action="store_true", help="Generate performance metrics")
 parser.add_argument("--insights", action="store_true", help="Generate application insights")
 parser.add_argument("--ids", action="store_true", help="Generate ID analysis")
+parser.add_argument("--visualize", action="store_true", help="Show data visualizations")
+
 args = parser.parse_args()
 
 
@@ -178,6 +181,46 @@ def print_id_analysis():
     print(f"Batch of 2024: {batch_dict['2024']} unique IDs")
     print(f"Batch of 2025: {batch_dict['2025']} unique IDs")
 
+def plot_endpoint_popularity():
+    endpoints = list(endpoint_dict.keys())
+    counts = [endpoint_dict[ep]['count'] for ep in endpoints]
+
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x=counts, y=endpoints, hue=endpoints, palette="viridis", legend=False)
+    plt.title("Endpoint Popularity")
+    plt.xlabel("Request Count")
+    plt.ylabel("Endpoints")
+    plt.tight_layout()
+
+
+
+
+def plot_batch_distribution():
+    batches = list(batch_dict.keys())
+    counts = list(batch_dict.values())
+
+    plt.figure(figsize=(7, 5))
+    sns.barplot(x=batches, y=counts, palette="mako")
+    plt.title("Unique ID Distribution by Batch")
+    plt.xlabel("Batch Year")
+    plt.ylabel("Unique IDs")
+    plt.tight_layout()
+
+
+
+def plot_strategy_usage():
+    strategies = list(strategy_dict.keys())
+    counts = list(strategy_dict.values())
+
+    plt.figure(figsize=(7, 5))
+    sns.barplot(x=counts, y=strategies, palette="flare")
+    plt.title("Timetable Generation Strategy Usage")
+    plt.xlabel("Usage Count")
+    plt.ylabel("Strategy")
+    plt.tight_layout()
+
+
+
 
 timetable = open("timetable.log", "r")
 
@@ -196,13 +239,9 @@ for line in timetable:
 
 calc_avg_max_time()
 
+any_flag = args.endpoints or args.metrics or args.insights or args.ids or args.visualize
 
-'''print_traffic_analysis()
-print_metrics()
-print_app_insights()
-print_id_analysis()'''
-
-any_flag = args.endpoints or args.metrics or args.insights or args.ids
+#if no arguments given functions will get executed
 
 if args.endpoints or not any_flag:
     print_traffic_analysis()
@@ -215,3 +254,9 @@ if args.insights or not any_flag:
 
 if args.ids or not any_flag:
     print_id_analysis()
+
+if args.visualize or not any_flag:
+    plot_endpoint_popularity()
+    plot_batch_distribution()
+    plot_strategy_usage()
+    plt.show()
